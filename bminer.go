@@ -1,0 +1,101 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
+)
+
+type BminerUtilization struct {
+	GPU    int `json:"gpu"`
+	Memory int `json:"memory"`
+}
+
+type BminerClocks struct {
+	Core   int `json:"core"`
+	Memory int `json:"memory"`
+}
+
+type BminerPCI struct {
+	Barl int `json:"barl_used"`
+	RX   int `json:"rx_throughput"`
+	TX   int `json:"tx_throughput"`
+}
+
+type BminerSolver struct {
+	SolutionRate float64 `json:"solution_rate"`
+	NonceRate    float64 `json:"nonce_rate"`
+}
+
+type BminerDevice struct {
+	Temp             int               `json:"temperature"`
+	Power            int               `json:"power"`
+	GlobalMemoryUsed int               `json:"global_memory_used"`
+	Utilization      BminerUtilization `json:"utilization"`
+	Clocks           BminerClocks      `json:"clocks"`
+	PCI              BminerPCI         `json:"pci"`
+}
+
+type BminerMiner struct {
+	Solver BminerSolver `json:"solver"`
+	Device BminerDevice `json:"device"`
+}
+
+type BminerStratum struct {
+	AcceptedShares    int     `json:"accepted_shares"`
+	RejectedShares    int     `json:"rejected_shares"`
+	AcceptedShareRate float64 `json:"accepted_share_rate"`
+	RejectedShareRate float64 `json:"rejected_share_rate"`
+}
+
+type BminerJSON struct {
+	Stratum   BminerStratum          `json:"stratum"`
+	Miners    map[string]BminerMiner `json:"miners"`
+	Version   string                 `json:"version"`
+	StartTime int                    `json:"start_time"`
+}
+
+func NewBminerJSON() *BminerJSON {
+	bj := new(BminerJSON)
+	bj.Miners = make(map[string]BminerMiner)
+	return bj
+}
+
+func strToInt(s string) int {
+	kint, err := strconv.Atoi(s)
+	if err != nil {
+		fmt.Printf("i=%d, type: %T\n", kint, kint)
+		panic(err)
+	}
+	return kint
+}
+
+func parseBminerOutput(b []byte) *BminerJSON {
+	var bminerJson = NewBminerJSON()
+	json.Unmarshal(b, &bminerJson)
+	return bminerJson
+}
+
+func hitBminer() {
+	fullhost := "http://" + host + ":" + port + "/api/status"
+	resp, err := http.Get(fullhost)
+	if err != nil {
+		fmt.Println("bminer api error!", err)
+		buf = []byte("connection error")
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("body read error!", err)
+	}
+
+	j := parseBminerOutput(body)
+	if err != nil {
+		panic(err)
+	}
+	js, _ := json.Marshal(j)
+	buf = js
+}
