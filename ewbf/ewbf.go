@@ -17,7 +17,7 @@ type Result struct {
 	GpuStatus      int
 	Solver         int
 	Temp           int
-	GPUPower       int
+	GPUPower       int `json:"gpu_power_usage"`
 	Hashrate       int `json:"speed_sps"`
 	AcceptedShares int
 	RejectedShares int
@@ -45,6 +45,7 @@ func parseOutput(b []byte) *EWBFOut {
 func HitEwbf(host_l string, port_l string, buf *[]byte) {
 	var hrtotal float64 = 0
 	var numMiners int = 0
+	var totalPower float64 = 0
 
 	bu, err := dialminer.DialMiner(host_l, port_l, "{\"method\":\"getstat\"}\n\n")
 	if err != nil {
@@ -53,13 +54,13 @@ func HitEwbf(host_l string, port_l string, buf *[]byte) {
 
 	bu = bytes.Trim(bu, "\x00")
 	e := parseOutput(bu)
-
 	for _, v := range e.Results {
 		hrtotal += float64(v.Hashrate)
+		totalPower += float64(v.GPUPower)
 		numMiners++
 	}
 
-	js, err := output.MakeJSON("ewbf", hrtotal, numMiners)
+	js, err := output.MakeJSON_full("ewbf", hrtotal, numMiners, totalPower)
 	if err != nil {
 		fmt.Println("Error:", err.Error())
 	}

@@ -24,7 +24,14 @@ usage:
 	
 	host is your miner (localhost)
 	port is the port on which the miner api is listening
-	miner program can be either "bminer" or "ccminer"
+	miners supported:
+		bminer: "bminer"
+		ccminer: "ccminer"
+		claymore: "claymore"
+		dtsm : "zm"
+		ewbf: "ewbf"
+		xmrig-nvidia: "xmrig"
+
 	`
 	fmt.Println(usage)
 }

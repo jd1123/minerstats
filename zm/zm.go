@@ -16,7 +16,7 @@ type Result struct {
 	GpuStatus      int
 	Solver         int
 	Temp           int
-	GPUPower       int
+	GPUPower       float64 `json:"power_usage"`
 	Hashrate       float64 `json:"avg_sol_ps"`
 	AcceptedShares int
 	RejectedShares int
@@ -45,6 +45,7 @@ func NewZMOutput() *ZMOutput {
 func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 	var hrtotal float64 = 0
 	var numMiners int = 0
+	var totalPower float64 = 0
 
 	resp, err := dialminer.DialMiner(host_l, minerPort_l, "{\"method\":\"getstat\"}")
 	if err != nil {
@@ -68,11 +69,13 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 	for _, v := range z.Results {
 		numMiners++
 		hrtotal += float64(v.Hashrate)
+		totalPower += float64(v.GPUPower)
 	}
 	o := output.NewOutput()
 	o.Minername = "zm"
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
+	o.TotalPower = totalPower
 	js, _ := json.Marshal(o)
 	*buf = js
 }

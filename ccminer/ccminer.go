@@ -139,6 +139,7 @@ func getThreadsInfo() []byte {
 func getHashrate() []byte {
 	var hrtotal float64 = 0
 	var numMiners int = 0
+	var totalPower float64 = 0
 
 	bu, err := dialminer.DialMiner(host, port, "threads")
 	if err != nil {
@@ -157,11 +158,13 @@ func getHashrate() []byte {
 		if ix == "" {
 		} else {
 			hr, _ := strconv.ParseFloat(m["KHS"], 64)
+			power, _ := strconv.ParseFloat(m["POWER"], 64)
 			hrtotal += hr * 1000
+			totalPower += power
 			numMiners++
 		}
 	}
-	js, err := output.MakeJSON("ccminer", hrtotal, numMiners)
+	js, err := output.MakeJSON_full("ccminer", hrtotal, numMiners, totalPower)
 	if err != nil {
 		panic(err)
 	}
