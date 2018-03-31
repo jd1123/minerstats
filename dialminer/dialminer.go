@@ -1,3 +1,8 @@
+/*
+	Simple package to make a tcp connection to a miner
+	service.
+*/
+
 package dialminer
 
 import (
