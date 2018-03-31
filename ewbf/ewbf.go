@@ -59,6 +59,7 @@ func HitEwbf(host_l string, port_l string, buf *[]byte) {
 	}
 
 	o := output.NewOutput()
+	o.Minername = "ewbf"
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
 	js, _ := json.Marshal(o)

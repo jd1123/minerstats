@@ -3,7 +3,6 @@ package zm
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 
 	"bitbucket.org/minerstats/dialminer"
 	"bitbucket.org/minerstats/output"
@@ -52,12 +51,18 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 		panic(err)
 	}
 	resp = bytes.Trim(resp, "\x00")
-	fmt.Println(string(resp))
 
 	z := NewZMOutput()
 	err = json.Unmarshal(resp, &z)
+
+	// This is made to intentionally break the program
+	// on this error. ZM for some reason sends malformed JSON on
+	// certain requests. I am not sure if this is a local only
+	// problem (as I have network issues at the moment) or something
+	// deeper.
 	if err != nil {
-		panic(err)
+		*buf = []byte("error:" + err.Error())
+		return
 	}
 
 	for _, v := range z.Results {
@@ -65,6 +70,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 		hrtotal += float64(v.Hashrate)
 	}
 	o := output.NewOutput()
+	o.Minername = "ZM"
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
 	js, _ := json.Marshal(o)

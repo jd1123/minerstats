@@ -6,6 +6,7 @@ import (
 
 	"bitbucket.org/minerstats/bminer"
 	"bitbucket.org/minerstats/ccminer"
+	"bitbucket.org/minerstats/claymore"
 	"bitbucket.org/minerstats/ewbf"
 	"bitbucket.org/minerstats/zm"
 )
@@ -53,6 +54,10 @@ func main() {
 	case "zm":
 		{
 			zm.HitZM(host, port, &buf)
+		}
+	case "claymore":
+		{
+			claymore.HitClaymore(host, port, &buf)
 		}
 	default:
 		{
