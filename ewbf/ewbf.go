@@ -1,12 +1,11 @@
 package ewbf
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 
+	"bitbucket.org/minerstats/dialminer"
 	"bitbucket.org/minerstats/output"
-
-	curl "github.com/andelf/go-curl"
 )
 
 type Result struct {
@@ -43,32 +42,22 @@ func parseOutput(b []byte) *EWBFOut {
 }
 
 func HitEwbf(host_l string, port_l string, buf *[]byte) {
-	var bu []byte
-	easy := curl.EasyInit()
-	defer easy.Cleanup()
 	var hrtotal float64 = 0
 	var numMiners int = 0
 
-	easy.Setopt(curl.OPT_URL, "http://shitcoin5:3333")
-
-	// make a callback function
-	fooTest := func(b []byte, userdata interface{}) bool {
-		//		println("DEBUG: size=>", len(buf))
-		//	println("DEBUG: content=>", string(buf))
-		bu = b
-		return true
+	bu, err := dialminer.DialMiner(host_l, port_l, "{\"method\":\"getstat\"}\n\n")
+	if err != nil {
+		panic(err)
 	}
 
-	easy.Setopt(curl.OPT_WRITEFUNCTION, fooTest)
-	easy.Setopt(curl.OPT_CUSTOMREQUEST, "{\"method\":\"getstat\"}")
-	if err := easy.Perform(); err != nil {
-		fmt.Printf("ERROR: %v\n", err)
-	}
+	bu = bytes.Trim(bu, "\x00")
 	e := parseOutput(bu)
+
 	for _, v := range e.Results {
 		hrtotal += float64(v.Hashrate)
 		numMiners++
 	}
+
 	o := output.NewOutput()
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners

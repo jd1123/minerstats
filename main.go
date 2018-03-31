@@ -7,6 +7,7 @@ import (
 	"bitbucket.org/minerstats/bminer"
 	"bitbucket.org/minerstats/ccminer"
 	"bitbucket.org/minerstats/ewbf"
+	"bitbucket.org/minerstats/zm"
 )
 
 var buf []byte
@@ -48,6 +49,10 @@ func main() {
 	case "ewbf":
 		{
 			ewbf.HitEwbf(host, port, &buf)
+		}
+	case "zm":
+		{
+			zm.HitZM(host, port, &buf)
 		}
 	default:
 		{
