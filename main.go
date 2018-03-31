@@ -8,6 +8,7 @@ import (
 	"bitbucket.org/minerstats/ccminer"
 	"bitbucket.org/minerstats/claymore"
 	"bitbucket.org/minerstats/ewbf"
+	"bitbucket.org/minerstats/xmrig"
 	"bitbucket.org/minerstats/zm"
 )
 
@@ -58,6 +59,10 @@ func main() {
 	case "claymore":
 		{
 			claymore.HitClaymore(host, port, &buf)
+		}
+	case "xmrig":
+		{
+			xmrig.HitXMRig(host, port, &buf)
 		}
 	default:
 		{

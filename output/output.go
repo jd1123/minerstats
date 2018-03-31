@@ -1,5 +1,9 @@
 package output
 
+import (
+	"encoding/json"
+)
+
 type Output struct {
 	Minername string  `json:"minername"`
 	Hashrate  float64 `json:"hashrate"`
@@ -14,4 +18,13 @@ type OutputEntry struct {
 func NewOutput() *Output {
 	o := new(Output)
 	return o
+}
+
+func MakeJSON(minerName string, hrtotal float64, numMiners int) ([]byte, error) {
+	o := NewOutput()
+	o.Minername = "ewbf"
+	o.Hashrate = hrtotal
+	o.NumMiners = numMiners
+	js, err := json.Marshal(o)
+	return js, err
 }
