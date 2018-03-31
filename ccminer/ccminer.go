@@ -1,4 +1,4 @@
-package main
+package ccminer
 
 import (
 	"encoding/json"
@@ -7,7 +7,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"bitbucket.org/minerstats/output"
 )
+
+var host string
+var port string
 
 type HWinfo struct {
 	Miners map[string]*HWinfoEntry `json:"miners"`
@@ -35,6 +40,7 @@ type ThreadEntry struct {
 	Fan   int64   `json:"fan"`
 	Power float64 `json:"power"`
 	KHs   float64 `json:"hashrate"`
+	Hs    float64 `json:"rawhashrate"`
 	I     float64 `json:"intensity"`
 }
 
@@ -49,14 +55,17 @@ func NewHWinfo() *HWinfo {
 	return h
 }
 
-func hitCCMiner() {
-	buf = getThreadsInfo()
+func HitCCMiner(host_l string, minerPort_l string, buf *[]byte) {
+	host = host_l
+	port = minerPort_l
+	*buf = getHashrate()
 }
 
 func dialCCminer(command string) (string, error) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", host+":"+port)
 	if err != nil {
 		fmt.Println("Resolve error!", err.Error())
+		fmt.Println("Host:", host, "Port:", port)
 		os.Exit(1)
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
@@ -144,11 +153,44 @@ func getThreadsInfo() []byte {
 			t.Miners[ix].Temp = temp
 			t.Miners[ix].Fan = fan
 			t.Miners[ix].I = intensity
-			t.Miners[ix].KHs = hr / 1000
+			t.Miners[ix].KHs = hr
+			t.Miners[ix].Hs = hr * 1000
 			t.Miners[ix].Power = power / 1000
 			t.Miners[ix].Bus = bus
 		}
 	}
 	b, _ := json.Marshal(t)
+	return b
+}
+
+func getHashrate() []byte {
+	o := output.NewOutput()
+	var hrtotal float64 = 0
+	var numMiners int = 0
+
+	threadsinfo, err := dialCCminer("threads")
+	if err != nil {
+		return []byte("connection error")
+	}
+	tokens := strings.Split(threadsinfo, "|")
+	for i := 0; i < len(tokens)-1; i++ {
+		m := make(map[string]string)
+		subtokens := strings.Split(tokens[i], ";")
+		for j := 0; j < len(subtokens)-1; j++ {
+			sst := strings.Split(subtokens[j], "=")
+			m[sst[0]] = sst[1]
+		}
+		ix := m["GPU"]
+		if ix == "" {
+		} else {
+			hr, _ := strconv.ParseFloat(m["KHS"], 64)
+			hrtotal += hr * 1000
+			numMiners++
+		}
+	}
+	o.Minername = "ccminer"
+	o.Hashrate = hrtotal
+	o.NumMiners = numMiners
+	b, _ := json.Marshal(o)
 	return b
 }

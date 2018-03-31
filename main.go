@@ -3,11 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"bitbucket.org/minerstats/bminer"
+	"bitbucket.org/minerstats/ccminer"
 )
 
 var buf []byte
-var host string;
-var port string;
+var host string
+var port string
 
 func usage() {
 	var usage string = `
@@ -31,21 +34,21 @@ func main() {
 		port = args[1]
 		host = args[0]
 	}
-  var miner = args[2]
-  switch miner {
-  case "ccminer":
-    {
-      hitCCMiner()
-    }
-  case "bminer":
-    {
-      hitBminer()
-    }
-  default:
-    {
-      fmt.Println("ERROR! miner argument not recognized!")
-      os.Exit(1)
-    }
-  }
-  fmt.Println(string(buf))
+	var miner = args[2]
+	switch miner {
+	case "ccminer":
+		{
+			ccminer.HitCCMiner(host, port, &buf)
+		}
+	case "bminer":
+		{
+			bminer.HitBminer(host, port, &buf)
+		}
+	default:
+		{
+			fmt.Println("ERROR! miner argument not recognized!")
+			os.Exit(1)
+		}
+	}
+	fmt.Println(string(buf))
 }

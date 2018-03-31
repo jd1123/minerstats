@@ -1,4 +1,4 @@
-package main
+package bminer
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+
+	"bitbucket.org/minerstats/output"
 )
 
 type BminerUtilization struct {
@@ -78,12 +80,13 @@ func parseBminerOutput(b []byte) *BminerJSON {
 	return bminerJson
 }
 
-func hitBminer() {
-	fullhost := "http://" + host + ":" + port + "/api/status"
+/*
+func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
+	fullhost := "http://" + host_l + ":" + minerPort_l + "/api/status"
 	resp, err := http.Get(fullhost)
 	if err != nil {
 		fmt.Println("bminer api error!", err)
-		buf = []byte("connection error")
+		*buf = []byte("connection error")
 		return
 	}
 	defer resp.Body.Close()
@@ -97,5 +100,37 @@ func hitBminer() {
 		panic(err)
 	}
 	js, _ := json.Marshal(j)
-	buf = js
+	*buf = js
+}
+*/
+func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
+	var hrtotal float64 = 0
+	var numMiners int = 0
+	fullhost := "http://" + host_l + ":" + minerPort_l + "/api/status"
+	resp, err := http.Get(fullhost)
+	if err != nil {
+		fmt.Println("bminer api error!", err)
+		*buf = []byte("connection error")
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("body read error!", err)
+	}
+
+	j := parseBminerOutput(body)
+	if err != nil {
+		panic(err)
+	}
+	for _, v := range j.Miners {
+		numMiners++
+		hrtotal += v.Solver.SolutionRate
+	}
+	o := output.NewOutput()
+	o.Minername = "bminer"
+	o.Hashrate = hrtotal
+	o.NumMiners = numMiners
+	js, _ := json.Marshal(o)
+	*buf = js
 }

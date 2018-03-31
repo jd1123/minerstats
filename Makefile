@@ -13,4 +13,4 @@ pack:
 all:
 	make clean
 	make build
-	make pack
+#	make pack
