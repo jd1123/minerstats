@@ -55,10 +55,9 @@ func HitClaymore(host_l string, minerPort_l string, buf *[]byte) {
 
 	numMiners := len(strings.Split(c.Result[3], ";"))
 
-	o := output.NewOutput()
-	o.Minername = "claymore"
-	o.Hashrate = float64(hrtotal)
-	o.NumMiners = numMiners
-	js, _ := json.Marshal(o)
+	js, err := output.MakeJSON("claymore", float64(hrtotal), numMiners)
+	if err != nil {
+		panic(err)
+	}
 	*buf = js
 }

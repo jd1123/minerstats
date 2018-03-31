@@ -22,7 +22,7 @@ func NewOutput() *Output {
 
 func MakeJSON(minerName string, hrtotal float64, numMiners int) ([]byte, error) {
 	o := NewOutput()
-	o.Minername = "ewbf"
+	o.Minername = minerName
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
 	js, err := json.Marshal(o)

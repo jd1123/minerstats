@@ -70,7 +70,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 		hrtotal += float64(v.Hashrate)
 	}
 	o := output.NewOutput()
-	o.Minername = "ZM"
+	o.Minername = "zm"
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
 	js, _ := json.Marshal(o)

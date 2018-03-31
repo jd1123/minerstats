@@ -2,12 +2,10 @@ package ccminer
 
 import (
 	"encoding/json"
-	"fmt"
-	"net"
-	"os"
 	"strconv"
 	"strings"
 
+	"bitbucket.org/minerstats/dialminer"
 	"bitbucket.org/minerstats/output"
 )
 
@@ -61,39 +59,13 @@ func HitCCMiner(host_l string, minerPort_l string, buf *[]byte) {
 	*buf = getHashrate()
 }
 
-func dialCCminer(command string) (string, error) {
-	tcpAddr, err := net.ResolveTCPAddr("tcp", host+":"+port)
-	if err != nil {
-		fmt.Println("Resolve error!", err.Error())
-		fmt.Println("Host:", host, "Port:", port)
-		os.Exit(1)
-	}
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	if err != nil {
-		fmt.Println("TCP Dial error!", err.Error())
-		return "", err
-	}
-	_, err = conn.Write([]byte(command))
-	if err != nil {
-		fmt.Println("Write error!", err.Error())
-		return "", err
-	}
-	reply := make([]byte, 4096)
-	_, err = conn.Read(reply)
-	if err != nil {
-		fmt.Println("Read error!", err.Error())
-		return "", err
-	}
-	return string(reply), nil
-}
-
 func getHwinfo() []byte {
 	h := NewHWinfo()
-	hwinfo, err := dialCCminer("hwinfo")
+	bu, err := dialminer.DialMiner(host, port, "hwinfo")
 	if err != nil {
 		return []byte("connection error")
 	}
-
+	hwinfo := string(bu)
 	tokens := strings.Split(hwinfo, "|")
 	for i := 0; i < len(tokens)-1; i++ {
 		m := make(map[string]string)
@@ -126,10 +98,11 @@ func getHwinfo() []byte {
 
 func getThreadsInfo() []byte {
 	t := NewThreads()
-	threadsinfo, err := dialCCminer("threads")
+	bu, err := dialminer.DialMiner(host, port, "threads")
 	if err != nil {
 		return []byte("connection error")
 	}
+	threadsinfo := string(bu)
 	tokens := strings.Split(threadsinfo, "|")
 	for i := 0; i < len(tokens)-1; i++ {
 		m := make(map[string]string)
@@ -164,14 +137,14 @@ func getThreadsInfo() []byte {
 }
 
 func getHashrate() []byte {
-	o := output.NewOutput()
 	var hrtotal float64 = 0
 	var numMiners int = 0
 
-	threadsinfo, err := dialCCminer("threads")
+	bu, err := dialminer.DialMiner(host, port, "threads")
 	if err != nil {
 		return []byte("connection error")
 	}
+	threadsinfo := string(bu)
 	tokens := strings.Split(threadsinfo, "|")
 	for i := 0; i < len(tokens)-1; i++ {
 		m := make(map[string]string)
@@ -188,9 +161,9 @@ func getHashrate() []byte {
 			numMiners++
 		}
 	}
-	o.Minername = "ccminer"
-	o.Hashrate = hrtotal
-	o.NumMiners = numMiners
-	b, _ := json.Marshal(o)
-	return b
+	js, err := output.MakeJSON("ccminer", hrtotal, numMiners)
+	if err != nil {
+		panic(err)
+	}
+	return js
 }
