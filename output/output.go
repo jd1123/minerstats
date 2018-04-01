@@ -26,6 +26,7 @@ func MakeJSON(minerName string, hrtotal float64, numMiners int) ([]byte, error) 
 	o.Minername = minerName
 	o.Hashrate = hrtotal
 	o.NumMiners = numMiners
+	o.TotalPower = -1
 	js, err := json.Marshal(o)
 	return js, err
 }
