@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"bitbucket.org/minerstats/bminer"
-	"bitbucket.org/minerstats/ccminer"
-	"bitbucket.org/minerstats/claymore"
-	"bitbucket.org/minerstats/ewbf"
-	"bitbucket.org/minerstats/xmrig"
-	"bitbucket.org/minerstats/zm"
+	"bitbucket.org/minerstats/miners/bminer"
+	"bitbucket.org/minerstats/miners/ccminer"
+	"bitbucket.org/minerstats/miners/claymore"
+	"bitbucket.org/minerstats/miners/ewbf"
+	"bitbucket.org/minerstats/miners/xmrig"
+	"bitbucket.org/minerstats/miners/zm"
 )
 
 var buf []byte
