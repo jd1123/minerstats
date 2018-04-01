@@ -3,7 +3,6 @@ package ethminer
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -15,18 +14,6 @@ type ethminerOutput struct {
 	Id      int      `json:"id"`
 	Result  []string `json:"result"`
 	JSONRpc string   `json:"json_rpc"`
-}
-
-type claymoreResult struct {
-	id0 string
-	id1 string
-	id2 string
-	id3 string
-	id4 string
-	id5 string
-	id6 string
-	id7 string
-	id8 string
 }
 
 func newEthminerOutput() *ethminerOutput {
@@ -42,7 +29,6 @@ func HitEthminer(host_l string, minerPort_l string, buf *[]byte) {
 		panic(err)
 	}
 	resp = bytes.Trim(resp, "\x00")
-	fmt.Println(string(resp))
 	c := newEthminerOutput()
 	err = json.Unmarshal(resp, &c)
 	if err != nil {

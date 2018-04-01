@@ -28,7 +28,7 @@ type claymoreResult struct {
 	id8 string
 }
 
-func NewClaymoreOutput() *claymoreOutput {
+func newClaymoreOutput() *claymoreOutput {
 	c := new(claymoreOutput)
 	c.Result = make([]string, 9, 20)
 	return c
@@ -42,7 +42,7 @@ func HitClaymore(host_l string, minerPort_l string, buf *[]byte) {
 	}
 	resp = bytes.Trim(resp, "\x00")
 
-	c := NewClaymoreOutput()
+	c := newClaymoreOutput()
 	err = json.Unmarshal(resp, &c)
 	if err != nil {
 		panic(err)

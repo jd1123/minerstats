@@ -8,7 +8,7 @@ import (
 	"bitbucket.org/minerstats/output"
 )
 
-type Result struct {
+type result struct {
 	Gpuid          int
 	Cudaid         int
 	Busid          string
@@ -23,7 +23,7 @@ type Result struct {
 	StartTime      int
 }
 
-type ZMOutput struct {
+type zmOutput struct {
 	Id        int      `json:"id"`
 	Uptime    int      `json:"uptime"`
 	Contime   int      `json:"contime"`
@@ -33,12 +33,12 @@ type ZMOutput struct {
 	Version   string   `json:"version"`
 	Error     string   `json:"error"`
 	StartTime int      `json:"start_time"`
-	Results   []Result `json:"result"`
+	Results   []result `json:"result"`
 }
 
-func NewZMOutput() *ZMOutput {
-	z := new(ZMOutput)
-	z.Results = make([]Result, 15, 30)
+func newZMOutput() *zmOutput {
+	z := new(zmOutput)
+	z.Results = make([]result, 15, 30)
 	return z
 }
 
@@ -53,7 +53,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 	}
 	resp = bytes.Trim(resp, "\x00")
 
-	z := NewZMOutput()
+	z := newZMOutput()
 	err = json.Unmarshal(resp, &z)
 
 	// This is made to intentionally break the program

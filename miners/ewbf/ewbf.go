@@ -9,7 +9,7 @@ import (
 	"bitbucket.org/minerstats/output"
 )
 
-type Result struct {
+type result struct {
 	Gpuid          int
 	Cudaid         int
 	Busid          string
@@ -24,7 +24,7 @@ type Result struct {
 	StartTime      int
 }
 
-type EWBFOut struct {
+type ewbfOut struct {
 	Id               int      `json:"id"`
 	Method           string   `json:"method"`
 	Error            string   `json:"error"`
@@ -32,12 +32,12 @@ type EWBFOut struct {
 	CurrentServer    string   `json:"current_server"`
 	AvailableServers int      `json:"available_servers"`
 	ServerStatus     int      `json:"server_status"`
-	Results          []Result `json:"result"`
+	Results          []result `json:"result"`
 }
 
-func parseOutput(b []byte) *EWBFOut {
-	e := new(EWBFOut)
-	e.Results = make([]Result, 1, 30)
+func parseOutput(b []byte) *ewbfOut {
+	e := new(ewbfOut)
+	e.Results = make([]result, 1, 30)
 	json.Unmarshal(b, &e)
 	return e
 }

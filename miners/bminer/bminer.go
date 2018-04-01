@@ -59,7 +59,7 @@ type BminerJSON struct {
 	StartTime int                    `json:"start_time"`
 }
 
-func NewBminerJSON() *BminerJSON {
+func newBminerJSON() *BminerJSON {
 	bj := new(BminerJSON)
 	bj.Miners = make(map[string]BminerMiner)
 	return bj
@@ -75,7 +75,7 @@ func strToInt(s string) int {
 }
 
 func parseBminerOutput(b []byte) *BminerJSON {
-	var bminerJson = NewBminerJSON()
+	var bminerJson = newBminerJSON()
 	json.Unmarshal(b, &bminerJson)
 	return bminerJson
 }
