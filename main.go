@@ -11,6 +11,7 @@ import (
 	"bitbucket.org/minerstats/miners/ewbf"
 	"bitbucket.org/minerstats/miners/xmrig"
 	"bitbucket.org/minerstats/miners/zm"
+	"bitbucket.org/minerstats/sniff"
 )
 
 var buf []byte
@@ -47,6 +48,9 @@ func main() {
 		host = args[0]
 	}
 	var miner = args[2]
+
+	sniff.SniffMiner()
+
 	switch miner {
 	case "ccminer":
 		{
