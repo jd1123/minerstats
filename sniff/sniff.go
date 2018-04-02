@@ -1,6 +1,14 @@
+// This package implements the sniffing.
+//
+// It runs netstat as a subprocess and filters out for known miners.
+// A consequence of this is that binaries must be named properly, as we know them
+// otherwise it will not detect the miner. The list of known miners will be documented
+// and binary names will be specified.
+
 package sniff
 
 import (
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -18,6 +26,11 @@ var minerlist []string = []string{
 	"ethminer",
 	"claymore",
 	"xmrig",
+}
+
+type validMiner struct {
+	name string
+	port string
 }
 
 type SniffOut struct {
@@ -40,6 +53,14 @@ func isAMiner(a string) bool {
 	return false
 }
 
+func newValidMiner(name string, port string) *validMiner {
+	v := new(validMiner)
+	v.name = name
+	v.port = port
+	return v
+}
+
+// This function runs netstat and parses the output.
 func getNetstatOutput() ([]*netstatProcess, error) {
 	out, err := exec.Command("netstat", "-plnt").Output()
 	if err != nil {
@@ -75,6 +96,7 @@ func getNetstatOutput() ([]*netstatProcess, error) {
 
 func SniffMiner() (string, error) {
 	var detectedMiner bool = false
+	var foundMiners []*validMiner
 
 	procs, err := getNetstatOutput()
 	if err != nil {
@@ -84,9 +106,13 @@ func SniffMiner() (string, error) {
 	for _, v := range procs {
 		if isAMiner(v.name) {
 			detectedMiner = true
+			foundMiners = append(foundMiners, newValidMiner(v.name, v.port))
 		}
 	}
 	if detectedMiner {
+		for _, v := range foundMiners {
+			fmt.Println(v)
+		}
 		return "yes!", nil
 	} else {
 		return "no", nil
