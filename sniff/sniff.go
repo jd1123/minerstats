@@ -8,6 +8,7 @@
 package sniff
 
 import (
+	"errors"
 	"fmt"
 	"os/exec"
 	"regexp"
@@ -28,9 +29,13 @@ var minerlist []string = []string{
 	"xmrig",
 }
 
-type validMiner struct {
-	name string
-	port string
+type ValidMiner struct {
+	Name string
+	Port string
+}
+
+func (v ValidMiner) PrintMiner() {
+	fmt.Println(v.Name + ":" + v.Port)
 }
 
 type SniffOut struct {
@@ -53,10 +58,10 @@ func isAMiner(a string) bool {
 	return false
 }
 
-func newValidMiner(name string, port string) *validMiner {
-	v := new(validMiner)
-	v.name = name
-	v.port = port
+func newValidMiner(name string, port string) *ValidMiner {
+	v := new(ValidMiner)
+	v.Name = name
+	v.Port = port
 	return v
 }
 
@@ -94,13 +99,13 @@ func getNetstatOutput() ([]*netstatProcess, error) {
 	return processes, nil
 }
 
-func SniffMiner() (string, error) {
+func SniffMiner() ([]*ValidMiner, error) {
 	var detectedMiner bool = false
-	var foundMiners []*validMiner
+	var foundMiners []*ValidMiner
 
 	procs, err := getNetstatOutput()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	for _, v := range procs {
@@ -110,11 +115,8 @@ func SniffMiner() (string, error) {
 		}
 	}
 	if detectedMiner {
-		for _, v := range foundMiners {
-			fmt.Println(v)
-		}
-		return "yes!", nil
+		return foundMiners, nil
 	} else {
-		return "no", nil
+		return nil, errors.New("No miners found")
 	}
 }

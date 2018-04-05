@@ -9,6 +9,7 @@ type Output struct {
 	Hashrate   float64 `json:"hashrate"`
 	NumMiners  int     `json:"numminers"`
 	TotalPower float64 `json:"power"`
+	Error      string  `json:"error"`
 }
 
 type OutputEntry struct {
