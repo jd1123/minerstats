@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"bitbucket.org/minerstats/output"
 )
@@ -24,7 +25,8 @@ func HitXMRig(host_l string, port_l string, buf *[]byte) {
 	json.Unmarshal(body, &defaultStruct)
 	hrtotal := defaultStruct["hashrate"].(map[string]interface{})["total"].([]interface{})[0].(float64)
 	numMiners := len(defaultStruct["health"].([]interface{}))
-	js, err := output.MakeJSON("xmrig-nvidia", hrtotal, numMiners)
+	hrstring := strconv.FormatFloat(hrtotal, 'f', -1, 64) + " H/s"
+	js, err := output.MakeJSON_full("xmrig-nvidia", hrtotal, hrstring, numMiners, 0)
 	if err != nil {
 		panic(err)
 	}

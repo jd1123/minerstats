@@ -109,8 +109,8 @@ func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	fullhost := "http://" + host_l + ":" + minerPort_l + "/api/status"
 	resp, err := http.Get(fullhost)
 	if err != nil {
-		fmt.Println("bminer api error!", err)
-		*buf = []byte("connection error")
+		//*buf = []byte("connection error")
+		*buf = output.MakeJSONError("bminer", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -130,6 +130,7 @@ func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	o := output.NewOutput()
 	o.Minername = "bminer"
 	o.Hashrate = hrtotal
+	o.HashrateString = strconv.FormatFloat(hrtotal, 'f', -1, 64) + " Sols/s"
 	o.NumMiners = numMiners
 	js, _ := json.Marshal(o)
 	*buf = js

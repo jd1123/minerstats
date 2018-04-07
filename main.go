@@ -11,6 +11,7 @@ import (
 	"bitbucket.org/minerstats/miners/ewbf"
 	"bitbucket.org/minerstats/miners/xmrig"
 	"bitbucket.org/minerstats/miners/zm"
+	"bitbucket.org/minerstats/output"
 	"bitbucket.org/minerstats/sniff"
 )
 
@@ -86,7 +87,8 @@ func main() {
 
 	// FIXME: return JSON with error
 	if err != nil {
-		fmt.Println(err.Error())
+		//		fmt.Println(err.Error())
+		fmt.Println(string(output.MakeJSONError("", err)))
 		os.Exit(1)
 	}
 

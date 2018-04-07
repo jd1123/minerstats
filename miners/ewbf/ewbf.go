@@ -3,7 +3,7 @@ package ewbf
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"strconv"
 
 	"bitbucket.org/minerstats/dialminer"
 	"bitbucket.org/minerstats/output"
@@ -49,7 +49,8 @@ func HitEwbf(host_l string, port_l string, buf *[]byte) {
 
 	bu, err := dialminer.DialMiner(host_l, port_l, "{\"method\":\"getstat\"}\n\n")
 	if err != nil {
-		panic(err)
+		*buf = output.MakeJSONError("ewbf", err)
+		return
 	}
 
 	bu = bytes.Trim(bu, "\x00")
@@ -60,9 +61,11 @@ func HitEwbf(host_l string, port_l string, buf *[]byte) {
 		numMiners++
 	}
 
-	js, err := output.MakeJSON_full("ewbf", hrtotal, numMiners, totalPower)
+	hrstring := strconv.FormatFloat(hrtotal, 'f', -1, 64)
+	js, err := output.MakeJSON_full("ewbf", hrtotal, hrstring, numMiners, totalPower)
 	if err != nil {
-		fmt.Println("Error:", err.Error())
+		*buf = output.MakeJSONError("ewbf", err)
+		return
 	}
 	*buf = js
 }

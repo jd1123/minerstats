@@ -159,12 +159,14 @@ func getHashrate() []byte {
 		} else {
 			hr, _ := strconv.ParseFloat(m["KHS"], 64)
 			power, _ := strconv.ParseFloat(m["POWER"], 64)
+			power = power / 1000
 			hrtotal += hr * 1000
 			totalPower += power
 			numMiners++
 		}
 	}
-	js, err := output.MakeJSON_full("ccminer", hrtotal, numMiners, totalPower)
+	hrstring := strconv.FormatFloat(hrtotal/1000000, 'f', -1, 64) + " MH/s"
+	js, err := output.MakeJSON_full("ccminer", hrtotal, hrstring, numMiners, totalPower)
 	if err != nil {
 		panic(err)
 	}
