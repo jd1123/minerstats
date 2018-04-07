@@ -116,13 +116,11 @@ func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("body read error!", err)
+		*buf = output.MakeJSONError("bminer", err)
+		return
 	}
 
 	j := parseBminerOutput(body)
-	if err != nil {
-		panic(err)
-	}
 	for _, v := range j.Miners {
 		numMiners++
 		hrtotal += v.Solver.SolutionRate
@@ -132,6 +130,11 @@ func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	o.Hashrate = hrtotal
 	o.HashrateString = strconv.FormatFloat(hrtotal, 'f', 2, 64) + " Sols/s"
 	o.NumMiners = numMiners
-	js, _ := json.Marshal(o)
+
+	js, err := json.Marshal(o)
+	if err != nil {
+		*buf = output.MakeJSONError("bminer", err)
+		return
+	}
 	*buf = js
 }
