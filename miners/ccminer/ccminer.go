@@ -42,6 +42,7 @@ func HitCCMiner(host_l string, minerPort_l string, buf *[]byte) {
 	js, err := output.MakeJSON_full("ccminer", hrtotal, hrstring, numMiners, totalPower)
 	if err != nil {
 		*buf = output.MakeJSONError("ccminer", err)
+		return
 	}
 
 	*buf = js
