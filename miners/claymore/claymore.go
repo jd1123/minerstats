@@ -16,18 +16,6 @@ type claymoreOutput struct {
 	Error  string   `json:"error"`
 }
 
-type claymoreResult struct {
-	id0 string
-	id1 string
-	id2 string
-	id3 string
-	id4 string
-	id5 string
-	id6 string
-	id7 string
-	id8 string
-}
-
 func newClaymoreOutput() *claymoreOutput {
 	c := new(claymoreOutput)
 	c.Result = make([]string, 9, 20)

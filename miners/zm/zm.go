@@ -57,8 +57,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 	z := newZMOutput()
 	err = json.Unmarshal(resp, &z)
 
-	// This is made to intentionally break the program
-	// on this error. ZM for some reason sends malformed JSON on
+	// ZM for some reason sends malformed JSON on
 	// certain requests. I am not sure if this is a local only
 	// problem (as I have network issues at the moment) or something
 	// deeper.

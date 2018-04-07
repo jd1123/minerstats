@@ -80,29 +80,6 @@ func parseBminerOutput(b []byte) *BminerJSON {
 	return bminerJson
 }
 
-/*
-func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
-	fullhost := "http://" + host_l + ":" + minerPort_l + "/api/status"
-	resp, err := http.Get(fullhost)
-	if err != nil {
-		fmt.Println("bminer api error!", err)
-		*buf = []byte("connection error")
-		return
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("body read error!", err)
-	}
-
-	j := parseBminerOutput(body)
-	if err != nil {
-		panic(err)
-	}
-	js, _ := json.Marshal(j)
-	*buf = js
-}
-*/
 func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	var hrtotal float64 = 0
 	var numMiners int = 0
