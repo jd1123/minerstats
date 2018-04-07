@@ -130,7 +130,7 @@ func HitBminer(host_l string, minerPort_l string, buf *[]byte) {
 	o := output.NewOutput()
 	o.Minername = "bminer"
 	o.Hashrate = hrtotal
-	o.HashrateString = strconv.FormatFloat(hrtotal, 'f', -1, 64) + " Sols/s"
+	o.HashrateString = strconv.FormatFloat(hrtotal, 'f', 2, 64) + " Sols/s"
 	o.NumMiners = numMiners
 	js, _ := json.Marshal(o)
 	*buf = js

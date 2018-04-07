@@ -2,7 +2,6 @@ package xmrig
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -16,19 +15,23 @@ func HitXMRig(host_l string, port_l string, buf *[]byte) {
 	fullhost := "http://" + host_l + ":" + port_l
 	resp, err := http.Get(fullhost)
 	if err != nil {
-		fmt.Println("xmrig api error!", err)
-		*buf = []byte("connection error")
+		*buf = output.MakeJSONError("xmrig", err)
 		return
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		*buf = output.MakeJSONError("xmrig", err)
+		return
+	}
 	json.Unmarshal(body, &defaultStruct)
 	hrtotal := defaultStruct["hashrate"].(map[string]interface{})["total"].([]interface{})[0].(float64)
 	numMiners := len(defaultStruct["health"].([]interface{}))
-	hrstring := strconv.FormatFloat(hrtotal, 'f', -1, 64) + " H/s"
+	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64) + " H/s"
 	js, err := output.MakeJSON_full("xmrig-nvidia", hrtotal, hrstring, numMiners, 0)
 	if err != nil {
-		panic(err)
+		*buf = output.MakeJSONError("xmrig", err)
+		return
 	}
 	*buf = js
 

@@ -61,7 +61,7 @@ func HitEwbf(host_l string, port_l string, buf *[]byte) {
 		numMiners++
 	}
 
-	hrstring := strconv.FormatFloat(hrtotal, 'f', -1, 64)
+	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64)
 	js, err := output.MakeJSON_full("ewbf", hrtotal, hrstring, numMiners, totalPower)
 	if err != nil {
 		*buf = output.MakeJSONError("ewbf", err)

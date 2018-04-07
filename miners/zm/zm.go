@@ -3,6 +3,7 @@ package zm
 import (
 	"bytes"
 	"encoding/json"
+	"strconv"
 
 	"bitbucket.org/minerstats/dialminer"
 	"bitbucket.org/minerstats/output"
@@ -62,7 +63,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 	// problem (as I have network issues at the moment) or something
 	// deeper.
 	if err != nil {
-		*buf = []byte("error:" + err.Error())
+		*buf = output.MakeJSONError("zm", err)
 		return
 	}
 
@@ -71,11 +72,21 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 		hrtotal += float64(v.Hashrate)
 		totalPower += float64(v.GPUPower)
 	}
+
+	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64) + " Sols/s"
+
 	o := output.NewOutput()
 	o.Minername = "zm"
 	o.Hashrate = hrtotal
+	o.HashrateString = hrstring
 	o.NumMiners = numMiners
 	o.TotalPower = totalPower
-	js, _ := json.Marshal(o)
+
+	js, err := json.Marshal(o)
+	if err != nil {
+		*buf = output.MakeJSONError("zm", err)
+		return
+	}
+
 	*buf = js
 }
