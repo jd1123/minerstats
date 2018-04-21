@@ -72,7 +72,7 @@ func HitZM(host_l string, minerPort_l string, buf *[]byte) {
 		totalPower += float64(v.GPUPower)
 	}
 
-	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64) + " Sols/s"
+	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64) + " Sol/s"
 
 	o := output.NewOutput()
 	o.Minername = "zm"
