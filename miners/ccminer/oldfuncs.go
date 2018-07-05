@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/minerstats/dialminer"
+	"github.com/jd1123/minerstats/dialminer"
 )
 
 type HWinfo struct {

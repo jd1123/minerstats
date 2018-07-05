@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"bitbucket.org/minerstats/output"
+	"github.com/jd1123/minerstats/output"
 )
 
 var defaultStruct map[string]interface{}

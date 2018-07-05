@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/minerstats/dialminer"
-	"bitbucket.org/minerstats/output"
+	"github.com/jd1123/minerstats/dialminer"
+	"github.com/jd1123/minerstats/output"
 )
 
 func HitCCMiner(host_l string, minerPort_l string, buf *[]byte) {

@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"bitbucket.org/minerstats/miners/bminer"
-	"bitbucket.org/minerstats/miners/ccminer"
-	"bitbucket.org/minerstats/miners/claymore"
-	"bitbucket.org/minerstats/miners/ethminer"
-	"bitbucket.org/minerstats/miners/ewbf"
-	"bitbucket.org/minerstats/miners/xmrig"
-	"bitbucket.org/minerstats/miners/zm"
-	"bitbucket.org/minerstats/output"
-	"bitbucket.org/minerstats/sniff"
+	"github.com/jd1123/minerstats/miners/bminer"
+	"github.com/jd1123/minerstats/miners/ccminer"
+	"github.com/jd1123/minerstats/miners/claymore"
+	"github.com/jd1123/minerstats/miners/ethminer"
+	"github.com/jd1123/minerstats/miners/ewbf"
+	"github.com/jd1123/minerstats/miners/xmrig"
+	"github.com/jd1123/minerstats/miners/zm"
+	"github.com/jd1123/minerstats/output"
+	"github.com/jd1123/minerstats/sniff"
 )
 
 var buf []byte
