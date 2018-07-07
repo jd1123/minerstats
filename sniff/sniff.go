@@ -90,7 +90,8 @@ func getNetstatOutput() ([]*netstatProcess, error) {
 		if process == "-" {
 			processes[pidx].name = process
 		} else {
-			processes[pidx].name = strings.Split(process, "/")[1]
+			items := strings.Split(process, "/")
+			processes[pidx].name = items[len(items)-1]
 		}
 
 		processes[pidx].status = status
