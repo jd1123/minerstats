@@ -11,6 +11,7 @@ import (
 	"github.com/jd1123/minerstats/miners/ewbf"
 	"github.com/jd1123/minerstats/miners/xmrig"
 	"github.com/jd1123/minerstats/miners/zm"
+	"github.com/jd1123/minerstats/miners/trex"
 	"github.com/jd1123/minerstats/output"
 	"github.com/jd1123/minerstats/sniff"
 )
@@ -65,6 +66,10 @@ func hitMiner(miner string, port string) {
 	case "xmrig":
 		{
 			xmrig.HitXMRig(host, port, &buf)
+		}
+	case "trex":
+		{
+			trex.HitTrex(host, port, &buf)
 		}
 	default:
 		{
