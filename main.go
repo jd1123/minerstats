@@ -12,6 +12,7 @@ import (
 	"github.com/jd1123/minerstats/miners/xmrig"
 	"github.com/jd1123/minerstats/miners/zm"
 	"github.com/jd1123/minerstats/miners/trex"
+	"github.com/jd1123/minerstats/miners/cpuminer_opt"
 	"github.com/jd1123/minerstats/output"
 	"github.com/jd1123/minerstats/sniff"
 )
@@ -70,6 +71,10 @@ func hitMiner(miner string, port string) {
 	case "trex":
 		{
 			trex.HitTrex(host, port, &buf)
+		}
+	case "cpuminer_opt":
+		{
+			cpuminer_opt.HitCPUMinerOpt(host, port, &buf)
 		}
 	default:
 		{
