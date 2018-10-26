@@ -11,6 +11,8 @@ import (
 	"github.com/jd1123/minerstats/miners/ewbf"
 	"github.com/jd1123/minerstats/miners/xmrig"
 	"github.com/jd1123/minerstats/miners/zm"
+	"github.com/jd1123/minerstats/miners/trex"
+	"github.com/jd1123/minerstats/miners/cpuminer_opt"
 	"github.com/jd1123/minerstats/output"
 	"github.com/jd1123/minerstats/sniff"
 )
@@ -66,6 +68,14 @@ func hitMiner(miner string, port string) {
 		{
 			xmrig.HitXMRig(host, port, &buf)
 		}
+	case "trex":
+		{
+			trex.HitTrex(host, port, &buf)
+		}
+	case "cpuminer_opt":
+		{
+			cpuminer_opt.HitCPUMinerOpt(host, port, &buf)
+		}
 	default:
 		{
 			fmt.Println("ERROR! miner argument not recognized!")
@@ -77,23 +87,26 @@ func hitMiner(miner string, port string) {
 
 func main() {
 	args := os.Args[1:]
-	if len(args) > 0 {
-		usage()
-		os.Exit(1)
-	}
 	host = "localhost"
+  if (len(args) == 0) {
+    op, err := sniff.SniffMiner()
 
-	op, err := sniff.SniffMiner()
+    // FIXME: return JSON with error
+    if err != nil {
+      //		fmt.Println(err.Error())
+      fmt.Println(string(output.MakeJSONError("", err)))
+      os.Exit(1)
+    }
 
-	// FIXME: return JSON with error
-	if err != nil {
-		//		fmt.Println(err.Error())
-		fmt.Println(string(output.MakeJSONError("", err)))
-		os.Exit(1)
-	}
-
-	for _, v := range op {
-		hitMiner(v.Name, v.Port)
-	}
-
+    for _, v := range op {
+      hitMiner(v.Name, v.Port)
+    }
+  } else {
+    if (args[0] == "-h") {
+      usage()
+      os.Exit(1)
+    } else {
+      hitMiner(args[0], args[1])
+    }
+  }
 }
