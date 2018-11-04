@@ -25,10 +25,11 @@ func HitXMRig(host_l string, port_l string, buf *[]byte) {
 		return
 	}
 	json.Unmarshal(body, &defaultStruct)
-	hrtotal := defaultStruct["hashrate"].(map[string]interface{})["total"].([]interface{})[0].(float64)
-	numMiners := len(defaultStruct["health"].([]interface{}))
+  hrs := defaultStruct["hashrate"].(map[string]interface{})
+	hrtotal := hrs["total"].([]interface{})[0].(float64)
+	numMiners := len(hrs)
 	hrstring := strconv.FormatFloat(hrtotal, 'f', 2, 64) + " H/s"
-	js, err := output.MakeJSON_full("xmrig-nvidia", hrtotal, hrstring, numMiners, 0)
+	js, err := output.MakeJSON_full("xmrig", hrtotal, hrstring, numMiners, 0)
 	if err != nil {
 		*buf = output.MakeJSONError("xmrig", err)
 		return
